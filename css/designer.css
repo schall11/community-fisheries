@@ -1,0 +1,293 @@
+#modalDesigner, #modalSplash {
+	position: absolute;
+	/*height: 500px;*/
+	top: calc(50% - 300px);
+	-moz-user-select: none; 
+    -khtml-user-select: none; 
+    -webkit-user-select: none; 
+    -o-user-select: none; 
+}
+
+/*.modal.fade .modal-dialog {
+    -webkit-transform: translate3d(0, -25%, 0);
+    transform: translate3d(0, -25%, 0);
+}*/
+
+.splash-body {
+	padding: 30px 15px;
+}
+
+.modal-backdrop {
+  background-color: rgba(0,0,0,0.5);
+}
+
+.show-designer-container {
+	position: fixed;
+	margin: auto;
+	right: 0;
+	top: calc(50% - 100px);
+	z-index: 1000;
+}
+
+.show-designer-container > button {
+	height: 150px;
+	padding: 0 2px 0 3px;
+}
+
+.designer .tab-pane.splash-screen {
+	padding-top: 20px;
+	margin-top: -100px;
+    z-index: 5003;
+    background-color: white;
+    height: 250px;
+}
+
+#searchDivDesigner.esriSearch .esriInput {
+	padding-top: 9px;
+	padding-bottom: 7px;
+}
+
+#searchDivDesigner.esriSearch .esriSearchButton {
+	padding: 8px 12px;
+}
+
+#modalDesigner .modal-title {
+    line-height: 1;
+}
+
+.designer {
+    margin: 0 auto;
+    margin-bottom: 0;
+    background: #fff;
+}
+
+.designer .nav-tabs {
+    position: relative;
+    margin: 5px auto;
+    margin-bottom: 0;
+    /*border-bottom-color: #e0e0e0;*/
+    border: none;
+}
+
+.designer > div.designer-inner {
+    position: relative;
+}
+
+.designer .connecting-line {
+    height: 2px;
+    background: #e0e0e0;
+    position: absolute;
+    width: 80%;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    top: 50%;
+    z-index: 1;
+}
+
+.designer .nav-tabs > li.active > a, 
+.designer .nav-tabs > li.active > a:hover, 
+.designer .nav-tabs > li.active > a:focus {
+    color: #555555;
+    cursor: default;
+    border: 0;
+    border-bottom-color: transparent;
+}
+
+.designer span.round-tab {
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    display: inline-block;
+    border-radius: 100px;
+    background: #fff;
+    border: 2px solid #e0e0e0;
+    z-index: 2;
+    position: absolute;
+    left: 0;
+    text-align: center;
+    font-size: 25px;
+}
+.designer span.round-tab i{
+    color:#555555;
+}
+.designer li.active span.round-tab {
+    background: #fff;
+    border: 2px solid #5A9359;
+    
+}
+.designer li.active span.round-tab i{
+    color: #5A9359;
+}
+
+.designer .list-inline > li:last-child {
+    padding-right: 0;
+}
+
+.designer .round-tab > i.glyphicon {
+	left: 1px;
+}
+
+.designer span.round-tab:hover {
+    color: #333;
+    border: 2px solid #333;
+}
+
+.designer .nav-tabs > li {
+    width: 20%;
+}
+
+/* Fix line-over nav */
+.designer .nav-tabs > li > a:hover {
+	border: none;
+	border-top: none;
+	border-bottom: none;
+	padding-top: 0;
+}
+
+.designer li:after {
+    content: " ";
+    position: absolute;
+    left: 40%;
+    opacity: 0;
+    margin: 0 auto;
+    bottom: 0px;
+    border: 5px solid transparent;
+    border-bottom-color: #5bc0de;
+    transition: 0.1s ease-in-out;
+}
+
+.designer li.active:after {
+    content: " ";
+    position: absolute;
+    left: 40%;
+    opacity: 1;
+    margin: 0 auto;
+    bottom: 0px;
+    border: 10px solid transparent;
+    border-bottom-color: #5A9359;
+}
+
+.designer .nav-tabs > li a {
+    width: 60px;
+    height: 60px;
+    margin: 20px auto;
+    border-radius: 100%;
+    padding: 0;
+}
+
+.designer .nav-tabs > li a:hover {
+    background: transparent;
+}
+
+.designer .tab-pane {
+  	position: relative;
+  	padding: 0px 30px 0;
+    margin-top: 20px;
+    /*max-height: 286px;*/
+	/*overflow-y: scroll;*/
+}
+
+.designer .form-horizontal {
+	min-height: 123px;
+}
+
+.designer .pane-more .glyphicon.glyphicon-option-horizontal {
+	right: 3px;
+}
+
+.designer h3 {
+    margin-top: 20px;
+    margin-bottom: 30px;
+}
+
+.designer .congrats {
+	margin-bottom: 16px;
+}
+
+.designer .download {
+	padding: 7px 0;
+}
+
+.designer .toggle-backdrop,
+.designer .toggle-backdrop:focus,
+.designer .toggle-backdrop:hover,
+.designer .toggle-backdrop:active
+ {
+	border: none;
+}
+
+@media( max-width : 585px ) {
+
+    .designer {
+        /*width: 90%;*/
+        height: auto !important;
+    }
+
+    #modalSplash {
+    	top: 0;
+	}
+
+	#modalDesigner {
+		top: 60px;
+	}
+
+	/* Hack */
+	#searchNavMenu.visible-xs.visible-sm.hidden {
+		display: none !important;
+	}
+
+    .designer span.round-tab {
+        font-size: 16px;
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+    }
+
+    .designer .nav-tabs > li a {
+        width: 50px;
+        height: 50px;
+        line-height: 50px;
+    }
+
+    .designer li.active:after {
+        content: " ";
+        position: absolute;
+        left: 35%;
+    }
+
+    .designer .round-tab > i.glyphicon {
+    	left: 1px;
+	}
+
+	.designer h3 {
+        margin-top: 10px;
+	    margin-bottom: 15px;
+	    font-size: 18px;
+	}
+
+	.designer p {
+		font-size: 14px;
+	}
+
+	.designer .congrats {
+		margin-bottom: 15px;
+	}
+
+	.designer .form-group > label {
+		font-size: 14px;
+	}
+
+	.designer .invisible {
+		display: none;
+	}
+
+	.designer #setLocationUseMap {
+		margin-top: 4px;
+	}
+
+	.designer .tab-pane {
+	    padding: 0;
+	}
+
+}

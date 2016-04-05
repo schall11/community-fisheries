@@ -1,0 +1,645 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<!-- Lock viewport to prevent scaling -->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="description" content="Calcite-Maps Demo - ArcGIS">
+<meta name="author" content="">
+<link rel="icon" href="http://www.esri.com/favicon.ico">
+<title>Calcite-Maps - Share ArcGIS</title>
+
+<!-- Bootstrap - For testing and comparison only -->
+<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
+
+<!-- Calcite-Bootstrap -->
+<link rel="stylesheet" href="http://esri.github.io/calcite-bootstrap/assets/css/calcite-bootstrap.css">
+
+<!-- Calcite-Maps -->
+<link rel="stylesheet" href="css/calcite-maps.css">
+<link rel="stylesheet" href="css/calcite-maps-arcgis.css">
+<link rel="stylesheet" href="css/themes.css">
+<link rel="stylesheet" href="css/designer.css">
+
+<!-- ArcGIS JS 4.0 Core CSS -->
+<link rel="stylesheet" href="http://js.arcgis.com/4.0beta1/esri/css/esri.css">
+
+<!-- ArcGIS JS 4.0 Digits CSS Overrides -->
+<!-- TODO - This will go away when the dojo styles are updated in core. -->
+<link rel="stylesheet" href="./css/calcite-dojo-4.0.css">
+
+<style>
+	html, body {
+		margin: 0;
+		padding: 0;
+		overflow: hidden;
+		height: 100%;
+	}
+	/* 2D and 3D views */
+	#mapViewDiv, #sceneViewDiv {
+	}
+	/* Search widget - TODO - needs to fit into navbar better and be more responsive */
+	#searchDiv {
+	}
+	.esriSearch .esriContainer .esriInput {
+		/*width: 175px;*/
+	}
+</style>
+
+</head>
+<body class="calcite-maps map-position-absolute nav-position-top nav-space-top panel-right zoom-top-left">
+
+	<!-- Navbar -->
+
+	<nav class="navbar navbar-dark navbar-fixed-top" style="background-color: rgba(110,110,110,0.7);">
+		<div class="container-fluid">
+
+			
+
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#mainNav" aria-expanded="false">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+
+				<a class="navbar-brand">
+                    <span class="glyphicon glyphicon-map-marker"></span>
+                </a>
+
+				<div class="navbar-info ">
+					<div class="navbar-title text-overflow" role="button" data-toggle="modal" data-target="#modalSplash">Utah Community Fishing Ponds</div>
+					<div class="navbar-subtitle text-overflow">Explore Community Fish Ponds</div> 
+				</div>
+			</div>
+
+			<!-- Navbar collapse -->
+			<div id="mainNav" class="collapse navbar-collapse" aria-expanded="false">
+				<ul class="nav navbar-nav navbar-right">                    
+					<!-- Map and Scene - NOTE: Removed on mobile devices due to 3D support -->
+					<li><a id="mapNav" class="hidden-xs hidden-sm hidden" href="#2dTab" aria-controls="2Dtab" role="tab" data-toggle="tab" title="2D View" data-placement="bottom">Map</a></li>
+					<li><a id="sceneNav" class="hidden-xs hidden-sm hidden" href="#3dTab" aria-controls="3Dtab" role="tab" data-toggle="tab" title="3D View" data-placement="bottom">Scene</a></li>                  
+					<li><form id="searchNav" class="navbar-form navbar-search hidden-xs visible-sm visible-md visible-lg hidden"><div id="searchNavDiv"></div></form></li>
+					<!-- Options dropdown menu -->
+					<li class="dropdown " role="presentation" >
+						<a class="dropdown-toggle hidden-xs" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></a>
+						<ul class="dropdown-menu" aria-lablledby="optionsToggle">
+							<li><a id="mapNavMenu" class="hidden-xs visible-sm hidden-md hidden-lg " href="#2dTab" aria-controls="2Dtab" role="tab" data-toggle="tab">Map</a></li>
+							<li><a id="sceneNavMenu" class="hidden-xs visible-sm hidden-md hidden-lg hidden" href="#3dTab" aria-controls="3Dtab" role="tab" data-toggle="tab">Scene</a></li>
+							<li><a id="infoNavMenu"  data-toggle="collapse" role="button" data-target="#panelInfo" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-info-sign"></span> Info</a></li>
+							<li><a id="searchNavMenu" class="visible-xs" data-toggle="collapse" role="button" data-target="#panelSearch" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Search</a></li>
+							<li><a id="basemapsNavMenu"  data-toggle="collapse" role="button" data-target="#panelBasemaps" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-th-large"></span> Basemaps</a></li>
+							<li><a id="bookmarksNavMenu" class="hidden" data-toggle="collapse" role="button" data-target="#panelBookmarks" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-book"></span> Bookmarks</a></li>
+							<li><a id="legendNavMenu" class="hidden" data-toggle="collapse" role="button" data-target="#panelLegend" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-list"></span> Legend</a></li>
+							<li><a id="printNavMenu" class="hidden" data-toggle="collapse" role="button" data-target="#panelPrint" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-print"></span> Print</a></li>
+							<li><a id="shareNavMenu" data-toggle="collapse" role="button" data-target="#panelShare" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-share"></span> Share</a></li>						
+						</ul>
+					</li>
+				</ul><!--/.nav -->
+			</div><!--/.nav-collapse -->
+		</div><!--/.container-fluid -->
+	</nav><!--/.navbar -->
+
+	<!-- Modal Splash -->
+
+	<div class="modal fade" id="modalSplash" tabindex="-1" role="dialog" aria-labelledby="splashlModal">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-body">
+					<div class="container-fluid">
+						<div class="row">
+							<div class="splash-body">
+								<div class="text-center">
+								 	<h3>Introducing Calcite-Maps</h3>
+								 	<hr>
+								 	<p>Design beautiful web mapping apps in minutes or build your own from scratch with the <a href="http://github.com/arcgis/calcite-maps">Calcite-Maps</a>/<a href="http://github.com/esri/calcite-bootstrap">Calcite-Bootstrap</a> framework.</p>
+								 	<br>
+								 	<div class="form-inline">
+										<div class="form-group">
+                                            <a class="btn btn-success btn-lg" href="../index.html" target="_blank">Get started today</a>
+										</div>
+									</div>
+									<br>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Map Container  -->
+
+	<div class="map-container">
+		<div id="tabContainer" class="tab-content">
+			<div class="tab-pane fade in active" role="tabpanel" id="2dTab">
+				<div id="mapViewDiv" class="map-position-absolute"></div>
+			</div>
+			<div class="tab-pane fade" role="tabpanel" id="3dTab">
+				<div id="sceneViewDiv" class="map-position-absolute">
+					<!-- TODO - Should be relative -->
+					<div class="scene-directions">
+						<div class="btn-group">
+							<button id="sceneLeft" type="button" class="btn btn-sm"><span class="glyphicon glyphicon-arrow-left" aria-hidden="true"></button>
+							<button id="sceneRight" type="button" class="btn btn-sm"><span class="glyphicon glyphicon-arrow-right" aria-hidden="true"></button>
+							<button id="sceneUp" type="button" class="btn btn-sm"><span class="glyphicon glyphicon-arrow-up" aria-hidden="true"></button>
+							<button id="sceneDown" type="button" class="btn btn-sm"><span class="glyphicon glyphicon-arrow-down" aria-hidden="true"></button>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div><!-- /.container -->
+
+	<!-- Panels -->
+
+	<div class="panel-container">
+		<!-- Collapsable panel -->
+		<div id="panelAccordion" class="panel-group"  role="tablist" aria-multiselectable="true">
+			<!-- Info Panel -->
+			<div id="panelInfo" class="panel panel-default collapse">
+				<div id="headingInfo" class="panel-heading" role="tab">
+				  <div class="panel-title">
+					<a class="panel-toggle" role="button" data-toggle="collapse" data-parent="#panelAccordion" href="#collapseInfo" aria-expanded="false" aria-controls="collapseInfo"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span> Info</a>
+					<a class="panel-close pull-right" role="button" data-toggle="collapse" data-target="#panelInfo" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a>     
+				  </div>
+				</div>
+				<div id="collapseInfo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingInfo">
+					<div class="panel-body">
+						Coming soon!
+					</div>
+				</div>
+			</div>
+			<!-- Search Panel -->
+			<div id="panelSearch" class="panel panel-default collapse">
+				<div id="headingSearch" class="panel-heading" role="tab">
+				  <div class="panel-title">
+					<a class="panel-toggle collapsed" role="button" data-toggle="collapse" data-parent="#panelAccordion" href="#collapseSearch" aria-expanded="false" aria-controls="collapseSearch"><span class="glyphicon glyphicon-search" aria-hidden="true"></span> Search</a>
+					<a class="panel-close pull-right" role="button"  data-toggle="collapse" data-target="#panelSearch" aria-expanded="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a>        
+				  </div>
+				</div>
+				<div id="collapseSearch" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSearch">
+				  <div class="panel-body">
+					<div id="searchDivPanel"></div>
+				  </div>
+				</div>
+			</div>
+			<!-- Basemaps Panel -->
+			<div id="panelBasemaps" class="panel panel-default collapse" aria-expanded="false">
+				<div id="headingBasemaps" class="panel-heading" role="tab">
+				  <div class="panel-title">
+					<a class="panel-toggle collapsed" role="button" data-toggle="collapse" data-parent="#panelAccordion" href="#collapseBasemaps" aria-expanded="false" aria-controls="collapseBasemaps"><span class="glyphicon glyphicon-th-large" aria-hidden="true"></span> Basemaps</a>
+					<a class="panel-close pull-right" role="button"  data-toggle="collapse" data-target="#panelBasemaps" aria-expanded="false"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a>      
+				  </div>
+				</div>
+				<div id="collapseBasemaps" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingBasemaps">
+				  <div class="panel-body">
+						<select id="selectBasemapPanel" class="form-control">
+							<option value="streets">Streets</option>
+							<option value="satellite">Satellite</option>
+							<option value="hybrid">Hybrid</option>
+							<option value="national-geographic">National Geographic</option>
+							<option value="topo">Topographic</option>
+							<option value="gray">Gray</option>
+							<option value="dark-gray">Dark Gray</option>
+							<option value="osm">Open Street Map</option>
+							<option value="vector-streets" selected>Streets (Vector Tiles)</option>
+							<option value="vector-streets-night">Streets Night (Vector Tiles)</option>
+							<option value="vector-streets-relief">Streets Relief (Vector Tiles)</option>
+							<option value="vector-streets-mobile">Streets Mobile (Vector Tiles)</option>
+							<option value="vector-canvas-light">Canvas Light (Vector Tiles)</option>
+							<option value="vector-canvas-dark">Canvas Dark (Vector Tiles)</option>
+						</select>
+				  </div>
+				</div>
+			</div>
+			<!-- Legend Panel -->
+			<div id="panelLegend" class="panel panel-default collapse">
+				<div id="headingLegend" class="panel-heading">
+				  <div class="panel-title">
+					<a class="panel-toggle" role="button" data-toggle="collapse" data-parent="#panelAccordion" href="#collapseLegend" aria-expanded="false" aria-controls="collapseLegend"><span class="glyphicon glyphicon-list" aria-hidden="true"></span> Legend</a>
+					<a class="panel-close pull-right" role="button" data-toggle="collapse" data-target="#panelLegend" aria-expanded="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a> 
+				  </div>
+				</div>
+				<div id="collapseLegend" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingLegend">
+				  	<div class="panel-body">
+						Coming soon!				  
+					</div>
+				</div>
+			</div>
+			<!-- Print Panel -->
+			<div id="panelPrint" class="panel panel-default collapse">
+				<div id="headingPrint" class="panel-heading">
+				  <div class="panel-title">
+					<a class="panel-toggle" role="button" data-toggle="collapse" data-parent="#panelAccordion" href="#collapsePrint" aria-expanded="false" aria-controls="collapsePrint"><span class="glyphicon glyphicon-print" aria-hidden="true"></span> Print</a>
+					<a class="panel-close pull-right" role="button" data-toggle="collapse" data-target="#panelPrint" aria-expanded="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a>
+				  </div>
+				</div>
+				<div id="collapsePrint" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingPrint">
+				  	<div class="panel-body">
+						Coming soon!				  
+					</div>
+				</div>
+			</div>
+			<!-- Share Panel -->
+			<div id="panelShare" class="panel panel-default collapse">
+				<div id="headingShare" class="panel-heading">
+				  <div class="panel-title">
+					<a class="panel-toggle" role="button" data-toggle="collapse" data-parent="#panelAccordion" href="#collapseShare" aria-expanded="false" aria-controls="collapseShare"><span class="glyphicon glyphicon-share" aria-hidden="true"></span> Share</a>
+					<a class="panel-close pull-right" role="button" data-toggle="collapse" data-target="#panelShare" aria-expanded="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a>  
+				  </div>
+				</div>
+				<div id="collapseShare" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingShare">
+				  	<div class="panel-body">
+						Coming soon!				  
+					</div>
+				</div>
+			</div>
+		</div>
+	</div> <!-- /.panel-container -->
+
+	<script>
+		var isMobile = false;
+		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+		  isMobile = true;
+		}
+	</script>
+	
+	<!-- ArcGIS JS 4.0 lirbaries -->
+	<script src="http://js.arcgis.com/4.0beta1/"></script>
+
+	<script>
+
+	// ======
+	// ArcGIS 
+	// ======
+	
+	var map, mapView, sceneView, searchWidgetNav, searchWidgetPanel, activeView, fl, settings, sceneZoomed;
+
+	require(["esri/Map",
+		"esri/views/SceneView",
+		"esri/views/MapView",
+		"esri/Basemap",
+		"esri/widgets/Search",
+		"esri/layers/FeatureLayer",
+		"esri/widgets/PopupTemplate",
+		"esri/core/watchUtils",
+		"dojo/query",
+		"dojo/dom-class",
+		"dojo/dom-style",
+		"dojo/html",
+		"dojo/domReady!"
+	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, PopupTemplate, watchUtils, query, domClass, domStyle, html) {
+		
+		// ============
+		// App Settings 
+		// ============
+		
+		/*try {
+			var url = window.location.search;
+			url = url.substring( url.indexOf('?') + 1 );
+			settings = JSON.parse(decodeURIComponent(url));
+			console.log(settings);
+			applyAppSettings(settings);
+		} catch (e) {
+			var error = "Share-ArcGIS.html JSON map params error. ";
+			console.log(error + e);
+			$("body").text(error + e);
+			return;
+		}
+
+		function applyAppSettings(settings) {
+			// Titles
+			html.set(query(".navbar-title")[0], settings.name.title);
+			html.set(query(".navbar-subtitle")[0], settings.name.subtitle);
+			// Theme
+			query("body").removeClass();
+			query("body").addClass(["calcite-maps", "map-position-absolute"]);
+			query("body").addClass(settings.theme.name);
+			query("body").addClass(settings.theme.navPosition);
+			query("body").addClass(settings.theme.navSpace);
+			//Controls
+			query("body").addClass(settings.theme.zoom);
+			query("body").addClass(settings.theme.panel);
+			query("body").addClass(settings.theme.minibar);
+			// Navbar
+			domStyle.set(query(".navbar")[0], "background-color", settings.theme.navbarColor);
+			query(".navbar").removeClass("navbar-default").addClass(settings.theme.navbarTextColor);			
+			query(".navbar").removeClass(["navbar-fixed-top", "navbar-fixed-bottom"]).addClass(settings.theme.navbarPosition);
+			
+			// Tools - Map/Scene
+			var none = true;
+			if (settings.tools.map && settings.tools.scene) {
+				query("#mapNav").removeClass("hidden");
+				query("#sceneNav").removeClass("hidden");				
+				query("#mapNavMenu").removeClass("hidden");
+				query("#sceneNavMenu").removeClass("hidden");				
+			}
+			
+			// Tools - All
+			none = settings.tools.info ? query("#infoNavMenu").removeClass("hidden") : false;
+			none = settings.tools.basemaps ? query("#basemapsNavMenu").removeClass("hidden") : false;
+			none = settings.tools.legend ? query("#legendNavMenu").removeClass("hidden") : false;
+			none = settings.tools.print ? query("#printNavMenu").removeClass("hidden") : false;
+			none = settings.tools.share ? query("#shareNavMenu").removeClass("hidden") : false;
+			if (settings.tools.search ) {
+				$("#searchNav").removeClass("hidden");
+				$("#searchNavMenu").removeClass("hidden");
+				none = false;
+			}
+			if (!none) {
+				query("#mainNav .dropdown").removeClass("hidden") 
+			}
+			
+			// View
+			if (settings.view === "2D") {
+				$("#mapNav").trigger("click");
+			} else {
+				$("#sceneNav").trigger("click");
+			}
+			
+			// Basemap
+			$("#selectBasemapPanel").val(settings.map.basemap);
+		}*/
+
+		// Map 
+		map = new Map({
+			basemap: "national-geographic"
+		});
+
+		// Map View
+		mapView = new MapView({
+			container: "mapViewDiv",
+			map: map,
+			center: [-111.95, 39.419],
+			zoom: 7
+		});
+
+		mapView.popup.anchor = "top";
+	 
+		/*mapScene = new Map({
+			basemap: settings.scene.basemap
+		});
+
+		// Scene View
+		sceneView = new SceneView({
+			container: "sceneViewDiv",
+			map: mapScene,
+			center: settings.scene.center,
+			zoom: settings.scene.zoom - .25
+		}); */
+
+		// Add feature layer to map and scene
+		//map.add(createLayer('http://services.arcgis.com/ZzrwjTRez6FJiOq4/arcgis/rest/services/Community_Fisheries_test/FeatureServer/0'));
+		//map.add(createLayer('http://services.arcgis.com/ZzrwjTRez6FJiOq4/arcgis/rest/services/Community_Fisheries_test/FeatureServer/1'));
+		
+		/*sceneZoomed = false;            
+        sceneView.watch("updating", function(newValue, oldValue, property, object) {
+			if (!newValue && !sceneZoomed) {
+				sceneZoomed = true;
+                sceneView.animateTo({tilt: settings.scene.camera.tilt, heading: settings.scene.camera.heading});
+			}
+		});*/
+
+        //sceneView.popup.anchor = "top";
+
+        fixPopup();
+
+		activeView = mapView;
+
+		// Search - Nav - TODO - detach/attach
+		searchNav = createSearchWidget("searchNavDiv");
+
+		// Search - Panel - TODO - detach/attach
+		searchWidgetPanel = createSearchWidget("searchDivPanel");
+
+		function createSearchWidget(parentId) {
+			var search = new Search({
+				view: activeView,
+				showPopupOnSelect: true,
+				enableHighlight: false
+				}, parentId);
+			search.startup();
+			// Set active view
+			search.watch(function(property, oldValue, newValue) {
+				if (property === "searchResults" && this.searchResults !== null) {
+					search.view = activeView;
+				}
+			}); 
+			return search;
+		}
+
+		function createLayer(layerSettings) {
+            var lyr = new FeatureLayer({ 
+                url: layerSettings.url,
+                maxScale: 0,
+                minScale: 0,
+                popupTemplate: new PopupTemplate({description: "{*}"}),
+                outFields: ["*"]
+                
+            });
+            return lyr;
+        }
+		
+		var popupTemplate = new PopupTemplate({
+		  fieldInfos: [{
+			fieldName: "WaterName",
+			label: "Name"
+		  }, {
+			fieldName: "ContactInf",
+			label: "Contact Information",
+			visible: true		
+		  }, {
+			fieldName: "Species",
+			label: "Stocked Species",
+			visible: true
+		  },
+		  {
+			fieldName: 'Stocking_R',
+			label: "Stocking Information",
+			visible: true
+		  }
+		  ]
+		 });
+		
+		var points = new FeatureLayer({
+			url: 'http://services.arcgis.com/ZzrwjTRez6FJiOq4/arcgis/rest/services/Community_Fisheries_test/FeatureServer/0',
+			outFields: ["*"],
+			popupTemplate: popupTemplate
+		});
+		var polys = new FeatureLayer({
+			url: 'http://services.arcgis.com/ZzrwjTRez6FJiOq4/arcgis/rest/services/Community_Fisheries_test/FeatureServer/1',
+			outFields: ["*"]
+		});
+		map.add([polys,points]);
+		function changeBasemaps(basemap) {
+			switch (basemap) {
+				case "streets":
+					map.basemap = "streets";
+					mapScene.basemap = "streets"
+					break;
+				case "gray":
+					map.basemap = "gray";
+					mapScene.basemap = "gray"
+					break;
+				case "dark-gray":
+					map.basemap = "dark-gray";
+					map.basemap = "dark-gray";
+					break;
+				case "satellite":
+					map.basemap = "satellite";
+					mapScene.basemap = "satellite";
+					break;
+				case "hybrid":
+					map.basemap = "hybrid";
+					mapScene.basemap = "hybrid";
+					break;
+				case "national-geographic":
+					map.basemap = "national-geographic";
+					mapScene.basemap = "national-geographic";
+					break;
+				case "topo":
+					map.basemap = "topo";
+					mapScene.basemap = "topo"
+					break;
+				case "osm":
+					map.basemap = "osm";
+					mapScene.basemap = "osm";
+					break;
+				case "vector-streets":
+					map.basemap = "vector-streets";
+					mapScene.basemap = "streets"
+					break;
+				case "vector-streets-night":
+					map.basemap = "vector-streets-night";
+					mapScene.basemap = "dark-gray"
+					break;
+				case "vector-streets-relief":
+					map.basemap = "vector-streets-relief";
+					mapScene.basemap = "streets"
+					break;
+				case "vector-streets-mobile":
+					map.basemap = "vector-streets-mobile";
+					mapScene.basemap = "streets"
+					break;
+				case "vector-canvas-dark":
+					map.basemap = "vector-canvas-dark";
+					mapScene.basemap = "dark-gray";
+					break;
+				case "vector-canvas-light":
+					map.basemap = "vector-canvas-light";
+					mapScene.basemap = "gray"
+					break;
+			}
+		}
+
+		function rotateView(direction) {
+			var heading = sceneView.camera.heading;
+			if (direction > 0) {
+			  heading = Math.floor((heading + 1e-3) / 90) * 90 + 90;
+			} else {
+			  heading = Math.ceil((heading - 1e-3) / 90) * 90 - 90;
+			}
+			sceneView.animateTo({
+			  heading: heading
+			});
+		}
+
+		function tiltView(direction) {
+			var tilt = sceneView.camera.tilt + 1e-3;
+			if (direction === "up") {
+				tilt-= 15;
+				tilt = tilt > 0 ? tilt: 0;
+			} else {
+				tilt+=15;
+				tilt = tilt > 89 ? 89 : tilt;
+			}
+			sceneView.animateTo({
+			  tilt: tilt
+			});
+		}
+  
+		function fixPopup() {            
+            if ($("body").hasClass("nav-position-top-fixed")) {
+                if (!$("body").hasClass("theme-jumbo-title")) {
+                    mapView.popup.offsetY = 60;
+                } else {
+                    mapView.popup.offsetY = 120;
+                }
+            } else {
+                mapView.popup.offsetY = 0;
+            }
+        }
+		
+		
+		// =====================
+		// jQuery - Map API code
+		// =====================
+
+		$(document).ready(function(){
+
+			// View is limited to 2D on mobile devices, no need for nav
+			if (isMobile) {
+				$("a[aria-controls='2Dtab'], a[aria-controls='3Dtab']").addClass("hidden");
+			}
+
+			// View changed
+			$("li a[data-toggle='tab']").click(function(e) {
+				switch (e.target.text) {
+					case "Map":
+						activeView = mapView;
+						break;
+					case "Scene":
+						activeView = sceneView;
+						break;
+				}
+			});
+
+			// Basemap changed
+			$("#selectBasemapPanel").on("change", function(){
+				changeBasemaps(this.value);
+			});
+
+			// Scene rotation and elevation controls
+			$("#sceneLeft").on("click", function() {
+				rotateView(-1);
+			});
+			$("#sceneRight").on( "click", function() {
+				rotateView(1);
+			});
+			$("#sceneUp").on("click", function() {
+				tiltView("up");
+			});
+			$("#sceneDown").on("click", function() {
+				tiltView("down");
+			});
+	
+		});<!-- jQuery -->
+	});<!-- dojo -->
+	</script>
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<!-- jQuery (for Bootstrap's JavaScript plugins). NOTE: You can also use pure Dojo. See examples. -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<!-- Include all  plugins or individual files as needed -->
+	<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<!--script src="../../assets/js/ie10-viewport-bug-workaround.js"></script-->
+  
+	<!--script src="http://esri.github.io/calcite-bootstrap/scripts/vendor.js"></script-->
+	<!--script src="http://esri.github.io/calcite-bootstrap/scripts/plugins.js"></script-->
+
+	<script src="scripts/calcitemaps.js"></script>
+	<!--script src="./js/jquery/panelsettings.js"></script-->
+	<!--script src="./js/jquery/designer.js"></script-->
+
+</body>
+</html>
+
