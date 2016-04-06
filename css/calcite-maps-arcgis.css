@@ -11,8 +11,9 @@
 
 /* Zoom Container */
 
-.calcite-maps.zoom-top-left .esriCorner.esriTop.esriLeft {
-    top: 0;
+
+.calcite-maps.zoom-top-left .esri-ui-top-left{
+    top: 85px;
     right: auto;
     bottom: auto;
     left: 0;

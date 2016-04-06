@@ -82,7 +82,7 @@
 					<!-- Map and Scene - NOTE: Removed on mobile devices due to 3D support -->
 					<li><a id="mapNav" class="hidden-xs hidden-sm hidden" href="#2dTab" aria-controls="2Dtab" role="tab" data-toggle="tab" title="2D View" data-placement="bottom">Map</a></li>
 					<li><a id="sceneNav" class="hidden-xs hidden-sm hidden" href="#3dTab" aria-controls="3Dtab" role="tab" data-toggle="tab" title="3D View" data-placement="bottom">Scene</a></li>                  
-					<li><form id="searchNav" class="navbar-form navbar-search hidden-xs visible-sm visible-md visible-lg hidden"><div id="searchNavDiv"></div></form></li>
+					<li><form id="searchNav" class="navbar-form navbar-search hidden-xs visible-sm visible-md visible-lg "><div id="searchNavDiv"></div></form></li>
 					<!-- Options dropdown menu -->
 					<li class="dropdown " role="presentation" >
 						<a class="dropdown-toggle hidden-xs" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></a>
@@ -289,12 +289,13 @@
 		"esri/widgets/Popup",
 		"esri/PopupTemplate",
 		"esri/core/watchUtils",
+		"esri/tasks/Locator",
 		"dojo/query",
 		"dojo/dom-class",
 		"dojo/dom-style",
 		"dojo/html",
 		"dojo/domReady!"
-	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, query, domClass, domStyle, html) {
+	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, Locator, query, domClass, domStyle, html) {
 		
 		// ============
 		// App Settings 
@@ -379,11 +380,35 @@
 			center: [-111.95, 39.419],
 			zoom: 7
 		});
+		
+		/*
 		mapView.then(function() {
         mapView.popup.viewModel.docked = true;
       });
+	  */
+	  
 		//mapView.popup.anchor = "top";
 
+		var directionsAction = {
+					title: "Directions",
+					id: "directions"
+				};
+		//mapView.popup.viewModel.actions.push(directionsAction);
+		//template.actions.push(directionsAction);
+		
+		mapView.popup.viewModel.actions.push(directionsAction);
+		
+		mapView.popup.viewModel.on("action-click", function(evt){
+			  //If the zoom-out action is clicked, the following code executes  
+			  if(evt.action.id === "directions"){
+					//window.open(evt.target.features[0].attributes.Stocking_R);
+					var lat = evt.target.location.latitude;
+					var lng = evt.target.location.longitude;
+					window.open('http://maps.google.com/maps?daddr='+lat+","+lng);
+					console.log(evt.target);
+				}  
+			});
+		
 		mapView.popup.viewModel.dockOptions = {
 			  //Automatically dock the popup when the constraints
 			  //defined in dockAtSize are met
@@ -441,6 +466,8 @@
 		  }
 		  ]
 		  });
+		//mapView.popup.viewModel.overwriteActions = true;
+		
 		
 		/*mapScene = new Map({
 			basemap: settings.scene.basemap
@@ -607,7 +634,12 @@
                 mapView.popup.offsetY = 0;
             }
         }
-		
+		points.on("mouse-over", function() {
+                    mapView.setMapCursor("pointer");
+                });
+                points.on("mouse-out", function() {
+                    mapView.setMapCursor("default");
+                });
 		
 		// =====================
 		// jQuery - Map API code
