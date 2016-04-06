@@ -405,7 +405,7 @@
 					var lat = evt.target.location.latitude;
 					var lng = evt.target.location.longitude;
 					window.open('http://maps.google.com/maps?daddr='+lat+","+lng);
-					console.log(evt.target);
+					//console.log(evt.target);
 				}  
 			});
 		
@@ -416,7 +416,7 @@
 			  //Disables the dock button from the popup
 			  dockButtonEnabled: true,
 			  //Ignore the default sizes that trigger responsive docking
-			  dockAtBreakpoint: false,
+			  dockAtBreakpoint: true,
 			  //Position the popup at the bottom left corner of the view
 			  dockPosition: mapView.popup.viewModel.dockPositions.bottom
 			};
