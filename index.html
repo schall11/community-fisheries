@@ -9,7 +9,7 @@
 <meta name="description" content="Calcite-Maps Demo - ArcGIS">
 <meta name="author" content="">
 <link rel="icon" href="http://www.esri.com/favicon.ico">
-<title>Calcite-Maps - Share ArcGIS</title>
+<title>Utah Community Fisheries</title>
 
 <!-- Bootstrap - For testing and comparison only -->
 <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"> -->
@@ -24,7 +24,7 @@
 <link rel="stylesheet" href="css/designer.css">
 
 <!-- ArcGIS JS 4.0 Core CSS -->
-<link rel="stylesheet" href="http://js.arcgis.com/4.0beta1/esri/css/esri.css">
+<link rel="stylesheet" href="http://js.arcgis.com/4.0beta3/esri/css/main.css">
 
 <!-- ArcGIS JS 4.0 Digits CSS Overrides -->
 <!-- TODO - This will go away when the dojo styles are updated in core. -->
@@ -270,7 +270,7 @@
 	</script>
 	
 	<!-- ArcGIS JS 4.0 lirbaries -->
-	<script src="http://js.arcgis.com/4.0beta1/"></script>
+	<script src="http://js.arcgis.com/4.0beta3/"></script>
 
 	<script>
 
@@ -286,14 +286,15 @@
 		"esri/Basemap",
 		"esri/widgets/Search",
 		"esri/layers/FeatureLayer",
-		"esri/widgets/PopupTemplate",
+		"esri/widgets/Popup",
+		"esri/PopupTemplate",
 		"esri/core/watchUtils",
 		"dojo/query",
 		"dojo/dom-class",
 		"dojo/dom-style",
 		"dojo/html",
 		"dojo/domReady!"
-	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, PopupTemplate, watchUtils, query, domClass, domStyle, html) {
+	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, query, domClass, domStyle, html) {
 		
 		// ============
 		// App Settings 
@@ -378,9 +379,69 @@
 			center: [-111.95, 39.419],
 			zoom: 7
 		});
+		mapView.then(function() {
+        mapView.popup.viewModel.docked = true;
+      });
+		//mapView.popup.anchor = "top";
 
-		mapView.popup.anchor = "top";
-	 
+		mapView.popup.viewModel.dockOptions = {
+			  //Automatically dock the popup when the constraints
+			  //defined in dockAtSize are met
+			  responsiveDockEnabled: true,
+			  //Disables the dock button from the popup
+			  dockButtonEnabled: true,
+			  //Ignore the default sizes that trigger responsive docking
+			  dockAtBreakpoint: false,
+			  //Position the popup at the bottom left corner of the view
+			  dockPosition: mapView.popup.viewModel.dockPositions.bottom
+			};
+		
+		/*var popupTemplate = new PopupTemplate({
+		  fieldInfos: [{
+			fieldName: "WaterName",
+			label: "Name"
+		  }, {
+			fieldName: "ContactInf",
+			label: "Contact Information",
+			visible: true		
+		  }, {
+			fieldName: "Species",
+			label: "Stocked Species",
+			visible: true
+		  },
+		  {
+			fieldName: 'Stocking_R',
+			label: "Stocking Information",
+			visible: true
+		  }
+		  ]
+		 });*/
+		
+		var template = new PopupTemplate({
+        title: "{WaterName}",
+        content: "Stocked with {Species}" +
+          "<br><br>For more information on stocking reports please visit <a href='{Stocking_R}'>Stocking Report</a>" +
+          "<br><br>For additional info, please contact the {ContactInf}",
+        fieldInfos: [{
+			fieldName: "WaterName",
+			label: "Name"
+		  }, {
+			fieldName: "ContactInf",
+			label: "Contact Information",
+			visible: true		
+		  }, {
+			fieldName: "Species",
+			label: "Stocked Species",
+			visible: true
+		  },
+		  {
+			fieldName: 'Stocking_R',
+			label: "Stocking Information",
+			visible: true
+		  }
+		  ]
+		  });
+		
 		/*mapScene = new Map({
 			basemap: settings.scene.basemap
 		});
@@ -432,50 +493,22 @@
 			}); 
 			return search;
 		}
-
-		function createLayer(layerSettings) {
-            var lyr = new FeatureLayer({ 
-                url: layerSettings.url,
-                maxScale: 0,
-                minScale: 0,
-                popupTemplate: new PopupTemplate({description: "{*}"}),
-                outFields: ["*"]
-                
-            });
-            return lyr;
-        }
 		
-		var popupTemplate = new PopupTemplate({
-		  fieldInfos: [{
-			fieldName: "WaterName",
-			label: "Name"
-		  }, {
-			fieldName: "ContactInf",
-			label: "Contact Information",
-			visible: true		
-		  }, {
-			fieldName: "Species",
-			label: "Stocked Species",
-			visible: true
-		  },
-		  {
-			fieldName: 'Stocking_R',
-			label: "Stocking Information",
-			visible: true
-		  }
-		  ]
-		 });
+		
+		 
+		 
 		
 		var points = new FeatureLayer({
 			url: 'http://services.arcgis.com/ZzrwjTRez6FJiOq4/arcgis/rest/services/Community_Fisheries_test/FeatureServer/0',
 			outFields: ["*"],
-			popupTemplate: popupTemplate
+			popupTemplate: template
 		});
 		var polys = new FeatureLayer({
 			url: 'http://services.arcgis.com/ZzrwjTRez6FJiOq4/arcgis/rest/services/Community_Fisheries_test/FeatureServer/1',
 			outFields: ["*"]
 		});
 		map.add([polys,points]);
+		
 		function changeBasemaps(basemap) {
 			switch (basemap) {
 				case "streets":
