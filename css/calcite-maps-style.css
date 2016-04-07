@@ -285,10 +285,7 @@
 .calcite-maps .navbar-dark .navbar-brand:focus {
 	color: #cccccc;
 }
-.calcite-maps .navbar-dark .navbar-info:hover, 
-.calcite-maps .navbar-dark .navbar-info:focus {
-	color: #cccccc;
-}
+
 .calcite-maps .navbar-dark .navbar-nav > li > a,
 .calcite-maps .navbar-dark .navbar-collapse.collapse.in .dropdown-menu > li > a {
 	color: #f8f8f8;

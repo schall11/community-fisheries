@@ -43,6 +43,7 @@
 		left: 15px;
 		
 	}
+	
 	/* 2D and 3D views */
 	#mapViewDiv, #sceneViewDiv {
 	}
@@ -74,11 +75,12 @@
 				</button>
 
 				<a class="navbar-brand">
-                    <span class="glyphicon glyphicon-map-marker"></span>
+					<img id = "DWRlogo" src="http://wildlife.utah.gov/pelican_webmap/images/DWR_logo_small.png" alt = "DWR Logo" title = "Utah DWR Home Page">
+                    <!-- <span class="glyphicon glyphicon-map-marker"></span> -->
                 </a>
 
 				<div class="navbar-info ">
-					<div class="navbar-title text-overflow" role="button" data-toggle="modal" data-target="#modalSplash">Utah Community Fishing Ponds</div>
+					<div class="navbar-title text-overflow">Utah Community Fishing Ponds</div>
 					<div class="navbar-subtitle text-overflow">Explore Community Fish Ponds</div> 
 				</div>
 			</div>
@@ -87,16 +89,16 @@
 			<div id="mainNav" class="collapse navbar-collapse" aria-expanded="false">
 				<ul class="nav navbar-nav navbar-right">                    
 					<!-- Map and Scene - NOTE: Removed on mobile devices due to 3D support -->
-					<li><a id="mapNav" class="hidden-xs hidden-sm hidden" href="#2dTab" aria-controls="2Dtab" role="tab" data-toggle="tab" title="2D View" data-placement="bottom">Map</a></li>
+					<li><a id="mapNav" data-toggle="modal" role="button" data-target="#modalSplash" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-info-sign"></span> Info</a></li>
 					<li><a id="sceneNav" class="hidden-xs hidden-sm hidden" href="#3dTab" aria-controls="3Dtab" role="tab" data-toggle="tab" title="3D View" data-placement="bottom">Scene</a></li>                  
-					<li><form id="searchNav" class="navbar-form navbar-search hidden-xs visible-sm visible-md visible-lg "><div id="searchNavDiv"></div></form></li>
+					<li><form id="searchNav" class="navbar-form navbar-search hidden-xs visible-sm visible-md visible-lg hidden"><div id="searchNavDiv"></div></form></li>
 					<!-- Options dropdown menu -->
 					<li class="dropdown " role="presentation" >
 						<a class="dropdown-toggle hidden-xs" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-option-horizontal" aria-hidden="true"></span></a>
 						<ul class="dropdown-menu" aria-lablledby="optionsToggle">
 							<li><a id="mapNavMenu" class="hidden-xs visible-sm hidden-md hidden-lg " href="#2dTab" aria-controls="2Dtab" role="tab" data-toggle="tab">Map</a></li>
 							<li><a id="sceneNavMenu" class="hidden-xs visible-sm hidden-md hidden-lg hidden" href="#3dTab" aria-controls="3Dtab" role="tab" data-toggle="tab">Scene</a></li>
-							<li><a id="infoNavMenu"  data-toggle="collapse" role="button" data-target="#panelInfo" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-info-sign"></span> Info</a></li>
+							<li><a id="infoNavMenu"  class = "hidden" data-toggle="modal" role="button" data-target="#modalSplash" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-info-sign"></span> Info</a></li>
 							<li><a id="searchNavMenu" class="visible-xs" data-toggle="collapse" role="button" data-target="#panelSearch" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Search</a></li>
 							<li><a id="basemapsNavMenu"  data-toggle="collapse" role="button" data-target="#panelBasemaps" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-th-large"></span> Basemaps</a></li>
 							<li><a id="bookmarksNavMenu" class="hidden" data-toggle="collapse" role="button" data-target="#panelBookmarks" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-book"></span> Bookmarks</a></li>
@@ -120,13 +122,22 @@
 						<div class="row">
 							<div class="splash-body">
 								<div class="text-center">
-								 	<h3>Introducing Calcite-Maps</h3>
+								 	<h3>What are Utah's Community fisheries?</h3>
 								 	<hr>
-								 	<p>Design beautiful web mapping apps in minutes or build your own from scratch with the <a href="http://github.com/arcgis/calcite-maps">Calcite-Maps</a>/<a href="http://github.com/esri/calcite-bootstrap">Calcite-Bootstrap</a> framework.</p>
+								 	<p>The DWR is committed to developing more community fisheries — places one can walk, bike or bus to, and catch a fish or two.</p>
+
+<p>Community fisheries provide a fun, easy way to spend quality time with family and friends outdoors. They offer a setting for parents and kids to talk, enhance family interaction, and keep busy Utahns in touch with the natural world. Fishing can provide families with opportunities to get away from their day-to-day problems and share time together.</p>
+
+<p>Kids benefit from fishing immensely, since they can participate solo or with others. It's a sport that builds self-esteem and confidence while enhancing problem-solving and decision-making skills.</p>
+
+<img src="http://wildlife.utah.gov/cf/photos/millrace_pond.jpg" width="555" height="149" alt="Millrace Park Pond">
+<p class="photo-credit">Millrace Park Pond near the Jordan River in Taylorsville</p>
+
+<p><b><a href="http://wildlife.utah.gov/cf/clubs.php">Utah fishing clubs</a>:</b> The DWR's Urban Fishing Program includes an educational component for urban children (ages six to 13) who have never fished, or haven't fished as much as they'd like. Youth fishing clubs form each spring in various communities to introduce young people to the joys of responsible sport fishing. The clubs are lead by adult mentors who teach interest youth about fish, the place they live, and how to catch them. So if you interested in volunteering or enrolling your children a youth fishing club, we've put together <a href="http://wildlife.utah.gov/cf/clubs.php">a list of these clubs</a>.</p>
 								 	<br>
 								 	<div class="form-inline">
 										<div class="form-group">
-                                            <a class="btn btn-success btn-lg" href="../index.html" target="_blank">Get started today</a>
+                                            <a class="btn btn-success btn-lg" href="http://wildlife.utah.gov/fishing-in-utah/community-fisheries.html" target="_blank">More Information</a>
 										</div>
 									</div>
 									<br>
@@ -175,7 +186,7 @@
 					<a class="panel-close pull-right" role="button" data-toggle="collapse" data-target="#panelInfo" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a>     
 				  </div>
 				</div>
-				<div id="collapseInfo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingInfo">
+				<div id="collapseInfo" class="panel-collapse " role="tabpanel" aria-labelledby="headingInfo">
 					<div class="panel-body">
 						Coming soon!
 					</div>

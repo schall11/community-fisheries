@@ -136,7 +136,7 @@
 	left: 62px;
 	width: calc(100% - 535px); /* Lg screens */
 	line-height: 1.2;
-	cursor: pointer;
+	cursor: cursor;
 	height: 100%;
 }
 
