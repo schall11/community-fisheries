@@ -37,6 +37,12 @@
 		overflow: hidden;
 		height: 100%;
 	}
+	#locateBtn {
+		position: absolute;
+		top: 170px;
+		left: 15px;
+		
+	}
 	/* 2D and 3D views */
 	#mapViewDiv, #sceneViewDiv {
 	}
@@ -49,8 +55,9 @@
 </style>
 
 </head>
-<body class="calcite-maps map-position-absolute nav-position-top nav-space-top panel-right zoom-top-left">
 
+<body class="calcite-maps map-position-absolute nav-position-top nav-space-top panel-right zoom-top-left">
+	
 	<!-- Navbar -->
 
 	<nav class="navbar navbar-dark navbar-fixed-top" style="background-color: rgba(110,110,110,0.7);">
@@ -137,7 +144,7 @@
 	<div class="map-container">
 		<div id="tabContainer" class="tab-content">
 			<div class="tab-pane fade in active" role="tabpanel" id="2dTab">
-				<div id="mapViewDiv" class="map-position-absolute"></div>
+				<div id="mapViewDiv" class="map-position-absolute"><div id="locateBtn"></div></div>
 			</div>
 			<div class="tab-pane fade" role="tabpanel" id="3dTab">
 				<div id="sceneViewDiv" class="map-position-absolute">
@@ -154,7 +161,7 @@
 			</div>
 		</div>
 	</div><!-- /.container -->
-
+	
 	<!-- Panels -->
 
 	<div class="panel-container">
@@ -289,13 +296,15 @@
 		"esri/widgets/Popup",
 		"esri/PopupTemplate",
 		"esri/core/watchUtils",
-		"esri/tasks/Locator",
+		"esri/widgets/Locate",
+		"esri/widgets/Locate/LocateViewModel",
+		"esri/layers/GraphicsLayer",
 		"dojo/query",
 		"dojo/dom-class",
 		"dojo/dom-style",
 		"dojo/html",
 		"dojo/domReady!"
-	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, Locator, query, domClass, domStyle, html) {
+	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, Locate, LocateVM, GraphicsLayer, query, domClass, domStyle, html) {
 		
 		// ============
 		// App Settings 
@@ -370,7 +379,7 @@
 
 		// Map 
 		map = new Map({
-			basemap: "national-geographic"
+			basemap: "topo"
 		});
 
 		// Map View
@@ -402,8 +411,9 @@
 			  //If the zoom-out action is clicked, the following code executes  
 			  if(evt.action.id === "directions"){
 					//window.open(evt.target.features[0].attributes.Stocking_R);
-					var lat = evt.target.location.latitude;
-					var lng = evt.target.location.longitude;
+					var lat = evt.target.features[0].geometry.latitude;
+					
+					var lng = evt.target.features[0].geometry.longitude;
 					window.open('http://maps.google.com/maps?daddr='+lat+","+lng);
 					//console.log(evt.target);
 				}  
@@ -536,6 +546,22 @@
 		});
 		map.add([polys,points]);
 		
+		//This graphics layer will store the graphic used to display the user's location
+		var gl = new GraphicsLayer();
+		map.add(gl);
+
+		var locateBtn = new Locate({
+		  //Setting widget properties in the VM is subject to change
+		  viewModel: new LocateVM({
+			view: mapView,   //attaches the Locate button to the view
+			graphicsLayer: gl  //the layer the locate graphic is assigned to
+		  })
+		}, "locateBtn");  //references the DOM node used to place the widget
+		//startup() must be called to start the widget
+		locateBtn.startup();
+		
+		
+		
 		function changeBasemaps(basemap) {
 			switch (basemap) {
 				case "streets":
@@ -634,6 +660,10 @@
                 mapView.popup.offsetY = 0;
             }
         }
+		
+		
+		
+		// doesnt work
 		points.on("mouse-over", function() {
                     mapView.setMapCursor("pointer");
                 });
