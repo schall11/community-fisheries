@@ -9,6 +9,9 @@
 	display: inline-block;
 }
 
+.modal-header{
+	border-bottom: 0px;
+}
 /* --- */
 /* Map */
 /* --- */
