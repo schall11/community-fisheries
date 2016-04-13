@@ -327,6 +327,7 @@
 		"esri/widgets/Locate",
 		"esri/widgets/Locate/LocateViewModel",
 		"esri/layers/GraphicsLayer",
+		"esri/geometry/Point",
 		"esri/widgets/Home",
 		"esri/widgets/Home/HomeViewModel",
 		"dojo/query",
@@ -334,7 +335,7 @@
 		"dojo/dom-style",
 		"dojo/html",
 		"dojo/domReady!"
-	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, Locate, LocateVM, GraphicsLayer, Home, HomeVM, query, domClass, domStyle, html) {
+	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, Locate, LocateVM, GraphicsLayer, Point, Home, HomeVM, query, domClass, domStyle, html) {
 		
 		// ============
 		// App Settings 
@@ -432,11 +433,34 @@
 					title: "Directions",
 					id: "directions"
 				};
-		//mapView.popup.viewModel.actions.push(directionsAction);
+				
+		var zoom = {
+					title: "Zoom To",
+					id: "zoom"
+				};
+		
+		
 		//template.actions.push(directionsAction);
 		
-		mapView.popup.viewModel.actions.push(directionsAction);
 		
+		function zoomIn() {
+			var pt = new Point({
+						  latitude: evt.target.features[0].geometry.latitude,
+						  longitude: evt.target.features[0].geometry.longitude
+						});
+					console.log(pt);
+					//pt.latitude = evt.target.features[0].geometry.latitude;
+					//pt.longitude = evt.target.features[0].geometry.longitude;
+					console.log("Clicked zoom");
+					console.log(evt.target.features[0].geometry.latitude);
+					console.log(evt.target.features[0].geometry.longitude);
+					mapView.animateTo({
+						target: pt,
+						zoom: 3
+					});
+		}
+	
+		mapView.popup.viewModel.zoomFactor = 15;
 		mapView.popup.viewModel.on("action-click", function(evt){
 			  //If the zoom-out action is clicked, the following code executes  
 			  if(evt.action.id === "directions"){
@@ -446,8 +470,39 @@
 					var lng = evt.target.features[0].geometry.longitude;
 					window.open('http://maps.google.com/maps?daddr='+lat+","+lng);
 					//console.log(evt.target);
+				} else if(evt.action.id === "zoom"){
+					//window.open(evt.target.features[0].attributes.Stocking_R);
+					var pt = new Point({
+						  latitude: evt.target.features[0].geometry.latitude,
+						  longitude: evt.target.features[0].geometry.longitude
+						});
+					console.log(pt);
+					//pt.latitude = evt.target.features[0].geometry.latitude;
+					//pt.longitude = evt.target.features[0].geometry.longitude;
+					console.log("Clicked zoom");
+					console.log(evt.target.features[0].geometry.latitude);
+					console.log(evt.target.features[0].geometry.longitude);
+					mapView.animateTo({
+						target: pt,
+						zoom: 17
+					});
+					//console.log(evt.target);
 				}  
 			});
+			
+		
+		/*mapView.popup.viewModel.on("action-click", function(evt){
+			  //If the zoom-out action is clicked, the following code executes  
+			  if(evt.action.id === "zoom-to"){
+					//window.open(evt.target.features[0].attributes.Stocking_R);
+					//pt = new Point();
+					//pt.latitude = evt.target.features[0].geometry.latitude;
+					//pt.longitude = evt.target.features[0].geometry.longitude;
+					console.log("Clicked zoom");
+					zoomIn();
+					//console.log(evt.target);
+				}  
+			});*/
 		
 		mapView.popup.viewModel.dockOptions = {
 			  //Automatically dock the popup when the constraints
@@ -460,7 +515,7 @@
 			  //Position the popup at the bottom left corner of the view
 			  dockPosition: mapView.popup.viewModel.dockPositions.bottom
 			};
-		
+		console.log(mapView.popup.viewModel);
 		/*var popupTemplate = new PopupTemplate({
 		  fieldInfos: [{
 			fieldName: "WaterName",
@@ -529,7 +584,12 @@
 		  }
 		  ]
 		  });
-		//mapView.popup.viewModel.overwriteActions = true;
+		  
+		  
+		mapView.popup.viewModel.overwriteActions = true;
+		delete mapView.popup.viewModel.actions[0];
+		mapView.popup.viewModel.actions.push(zoom);
+		mapView.popup.viewModel.actions.push(directionsAction);
 		
 		
 		/*mapScene = new Map({
