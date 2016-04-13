@@ -22,7 +22,9 @@
 <link rel="stylesheet" href="css/calcite-maps-arcgis.css">
 <link rel="stylesheet" href="css/themes.css">
 <link rel="stylesheet" href="css/designer.css">
+<link rel="stylesheet" href="css/social-sharing.css">
 
+<link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet">
 <!-- ArcGIS JS 4.0 Core CSS -->
 <link rel="stylesheet" href="http://js.arcgis.com/4.0beta3/esri/css/main.css">
 
@@ -40,7 +42,13 @@
 	}
 	#locateBtn {
 		position: absolute;
-		top: 170px;
+		top: 220px;
+		left: 15px;
+		
+	}
+	#homediv {
+		position: absolute;
+		top: 110px;
 		left: 15px;
 		
 	}
@@ -100,7 +108,7 @@
 							<li><a id="mapNavMenu" class="hidden-xs visible-sm hidden-md hidden-lg " href="#2dTab" aria-controls="2Dtab" role="tab" data-toggle="tab">Map</a></li>
 							<li><a id="sceneNavMenu" class="hidden-xs visible-sm hidden-md hidden-lg hidden" href="#3dTab" aria-controls="3Dtab" role="tab" data-toggle="tab">Scene</a></li>
 							<li><a id="infoNavMenu"  class = "hidden" data-toggle="modal" role="button" data-target="#modalSplash" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-info-sign"></span> Info</a></li>
-							<li><a id="searchNavMenu" class="visible-xs" data-toggle="collapse" role="button" data-target="#panelSearch" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Search</a></li>
+							<li><a id="searchNavMenu" class="visible-xs hidden" data-toggle="collapse" role="button" data-target="#panelSearch" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-search"></span> Search</a></li>
 							<li><a id="basemapsNavMenu"  data-toggle="collapse" role="button" data-target="#panelBasemaps" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-th-large"></span> Basemaps</a></li>
 							<li><a id="bookmarksNavMenu" class="hidden" data-toggle="collapse" role="button" data-target="#panelBookmarks" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-book"></span> Bookmarks</a></li>
 							<li><a id="legendNavMenu" class="hidden" data-toggle="collapse" role="button" data-target="#panelLegend" aria-haspopup="true" aria-expanded="false"><span class="glyphicon glyphicon-list"></span> Legend</a></li>
@@ -159,7 +167,7 @@
 	<div class="map-container">
 		<div id="tabContainer" class="tab-content">
 			<div class="tab-pane fade in active" role="tabpanel" id="2dTab">
-				<div id="mapViewDiv" class="map-position-absolute"><div id="locateBtn"></div></div>
+				<div id="mapViewDiv" class="map-position-absolute"><div id="homediv"></div><div id="locateBtn"></div></div>
 			</div>
 			<div class="tab-pane fade" role="tabpanel" id="3dTab">
 				<div id="sceneViewDiv" class="map-position-absolute">
@@ -275,9 +283,14 @@
 					<a class="panel-close pull-right" role="button" data-toggle="collapse" data-target="#panelShare" aria-expanded="true"><span class="glyphicon glyphicon-remove" aria-hidden="true"></a>  
 				  </div>
 				</div>
-				<div id="collapseShare" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingShare">
+				<div id="collapseShare" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingShare" style= "text-align: center;">
 				  	<div class="panel-body">
-						Coming soon!				  
+						<!-- Twitter -->
+						<a href="http://twitter.com/home?status=" title="Share on Twitter" target="_blank" class="btn btn-twitter"><i class="fa fa-twitter"></i></a>
+						 <!-- Facebook -->
+						<a href="https://www.facebook.com/sharer/sharer.php?u=" title="Share on Facebook" target="_blank" class="btn btn-facebook"><i class="fa fa-facebook"></i></a>
+						<!-- Google+ -->
+						<a href="https://plus.google.com/share?url=" title="Share on Google+" target="_blank" class="btn btn-googleplus"><i class="fa fa-google-plus"></i></a>			  
 					</div>
 				</div>
 			</div>
@@ -314,12 +327,14 @@
 		"esri/widgets/Locate",
 		"esri/widgets/Locate/LocateViewModel",
 		"esri/layers/GraphicsLayer",
+		"esri/widgets/Home",
+		"esri/widgets/Home/HomeViewModel",
 		"dojo/query",
 		"dojo/dom-class",
 		"dojo/dom-style",
 		"dojo/html",
 		"dojo/domReady!"
-	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, Locate, LocateVM, GraphicsLayer, query, domClass, domStyle, html) {
+	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, Locate, LocateVM, GraphicsLayer, Home, HomeVM, query, domClass, domStyle, html) {
 		
 		// ============
 		// App Settings 
@@ -466,12 +481,35 @@
 		  }
 		  ]
 		 });*/
-		
+		function dataPull(name){
+			var xmlhttp;
+			if (window.XMLHttpRequest) { // code for IE7+, Firefox, Chrome, Opera, Safari
+				xmlhttp = new XMLHttpRequest();
+			} else { // code for IE6, IE5
+				xmlhttp = new ActiveXObject("Microsoft.XMLHTTP");
+			}
+
+			xmlhttp.onreadystatechange = function() {
+				if (xmlhttp.readyState == 4 && xmlhttp.status == 200) {
+					var resp = xmlhttp.responseText;
+	// 				$("#fishTable").innerHTML = xmlhttp.responseText;
+					// console.log(xmlhttp.responseText);
+					return resp
+					console.log(resp);
+				}
+			}
+			xmlhttp.open("GET", "https://dwrapps.utah.gov/fishstocking/FishAjax?y=" + 2016 + "&sort=watername&sortorder=ASC"
+				+ "&sortspecific=" + name + "&whichSpecific=watername", true);
+				xmlhttp.send();
+
+
+		}
 		var template = new PopupTemplate({
         title: "{WaterName}",
         content: "Stocked with {Species}" +
           "<br><br>For more information on stocking reports please visit <a href='{Stocking_R}'>Stocking Report</a>" +
-          "<br><br>For additional info, please contact the {ContactInf}",
+          "<br><br>For additional info, please contact the {ContactInf}<br><br>"+ 
+		  dataPull("{WaterName}"),
         fieldInfos: [{
 			fieldName: "WaterName",
 			label: "Name"
@@ -559,7 +597,7 @@
 			url: 'http://services.arcgis.com/ZzrwjTRez6FJiOq4/arcgis/rest/services/Community_Fisheries_test/FeatureServer/1',
 			outFields: ["*"]
 		});
-		map.add([polys,points]);
+		map.add([points]);
 		
 		//This graphics layer will store the graphic used to display the user's location
 		var gl = new GraphicsLayer();
@@ -575,7 +613,14 @@
 		//startup() must be called to start the widget
 		locateBtn.startup();
 		
-		
+		var homeBtn = new Home({
+		  //Setting properties in the VM is subject to change
+		  viewModel: new HomeVM({
+			view: mapView
+		  })
+		}, "homediv");  //references the DOM node used to place the widget
+		//startup() must be called to start the widget
+		homeBtn.startup(); 
 		
 		function changeBasemaps(basemap) {
 			switch (basemap) {
