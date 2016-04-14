@@ -236,13 +236,6 @@
 							<option value="topo">Topographic</option>
 							<option value="gray">Gray</option>
 							<option value="dark-gray">Dark Gray</option>
-							<option value="osm">Open Street Map</option>
-							<option value="vector-streets" selected>Streets (Vector Tiles)</option>
-							<option value="vector-streets-night">Streets Night (Vector Tiles)</option>
-							<option value="vector-streets-relief">Streets Relief (Vector Tiles)</option>
-							<option value="vector-streets-mobile">Streets Mobile (Vector Tiles)</option>
-							<option value="vector-canvas-light">Canvas Light (Vector Tiles)</option>
-							<option value="vector-canvas-dark">Canvas Dark (Vector Tiles)</option>
 						</select>
 				  </div>
 				</div>
@@ -628,7 +621,9 @@
 		}
 		
 		
-		 
+		 var mask = new FeatureLayer({
+			url: 'http://services.arcgis.com/ZzrwjTRez6FJiOq4/ArcGIS/rest/services/UtahStateMask/FeatureServer/0'
+		});
 		 
 		
 		var points = new FeatureLayer({
@@ -636,7 +631,7 @@
 			outFields: ["*"],
 			popupTemplate: template
 		});
-		map.add([points]);
+		map.add([points, mask]);
 		
 		//This graphics layer will store the graphic used to display the user's location
 		var gl = new GraphicsLayer();
@@ -665,59 +660,24 @@
 			switch (basemap) {
 				case "streets":
 					map.basemap = "streets";
-					mapScene.basemap = "streets"
 					break;
 				case "gray":
 					map.basemap = "gray";
-					mapScene.basemap = "gray"
 					break;
 				case "dark-gray":
-					map.basemap = "dark-gray";
 					map.basemap = "dark-gray";
 					break;
 				case "satellite":
 					map.basemap = "satellite";
-					mapScene.basemap = "satellite";
 					break;
 				case "hybrid":
 					map.basemap = "hybrid";
-					mapScene.basemap = "hybrid";
 					break;
 				case "national-geographic":
 					map.basemap = "national-geographic";
-					mapScene.basemap = "national-geographic";
 					break;
 				case "topo":
 					map.basemap = "topo";
-					mapScene.basemap = "topo"
-					break;
-				case "osm":
-					map.basemap = "osm";
-					mapScene.basemap = "osm";
-					break;
-				case "vector-streets":
-					map.basemap = "vector-streets";
-					mapScene.basemap = "streets"
-					break;
-				case "vector-streets-night":
-					map.basemap = "vector-streets-night";
-					mapScene.basemap = "dark-gray"
-					break;
-				case "vector-streets-relief":
-					map.basemap = "vector-streets-relief";
-					mapScene.basemap = "streets"
-					break;
-				case "vector-streets-mobile":
-					map.basemap = "vector-streets-mobile";
-					mapScene.basemap = "streets"
-					break;
-				case "vector-canvas-dark":
-					map.basemap = "vector-canvas-dark";
-					mapScene.basemap = "dark-gray";
-					break;
-				case "vector-canvas-light":
-					map.basemap = "vector-canvas-light";
-					mapScene.basemap = "gray"
 					break;
 			}
 		}
