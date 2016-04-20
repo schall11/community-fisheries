@@ -83,8 +83,12 @@
 }
 
 .calcite-maps.nav-space-top .navbar {
+	background-color: #44413A !important;
+	border-top: 1px solid #ccbda6;
+	border-bottom: 1px solid #ccbda6;
 	margin-top: 15px;
 	margin-bottom: 0;
+	box-shadow: 0px 1vmin 1vmin rgba(0, 0, 0, 0.50)
 }
 
 .calcite-maps.nav-space-bottom .navbar {
