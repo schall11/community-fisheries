@@ -424,12 +424,14 @@
 
 		var directionsAction = {
 					title: "Directions",
-					id: "directions"
+					id: "directions", 
+					image: 'icons/directions.png'
 				};
 				
 		var zoom = {
 					title: "Zoom To",
-					id: "zoom"
+					id: "zoom",
+					image: 'icons/zoom_in.png'
 				};
 		
 		
@@ -477,10 +479,14 @@
 					//console.log("Clicked zoom");
 					//console.log(evt.target.features[0].geometry.latitude);
 					//console.log(evt.target.features[0].geometry.longitude);
+					
 					mapView.animateTo({
 						target: pt,
 						zoom: 17
 					});
+					console.log(mapView.popup);
+					mapView.popup.set(mapView.popup.params.viewModel.location.latitude, latitude);
+					mapView.popup.set(mapView.popup.params.viewModel.location.longitude, longitude);
 					//console.log(evt.target);
 				}  
 			});
@@ -541,7 +547,8 @@
           "<br><br>For additional info, please contact the {ContactInf}<br>",
         fieldInfos: [{
 			fieldName: "WaterName",
-			label: "Name"
+			label: "Name",
+			visible: true
 		  }, {
 			fieldName: "ContactInf",
 			label: "Contact Information",
@@ -627,7 +634,7 @@
 		 
 		
 		var points = new FeatureLayer({
-			url: 'http://services.arcgis.com/ZzrwjTRez6FJiOq4/arcgis/rest/services/Community_Fisheries_test/FeatureServer/0',
+			url: 'http://maps.dnr.utah.gov:6080/arcgis/rest/services/DWR/Community_Fisheries/MapServer/0',
 			outFields: ["*"],
 			popupTemplate: template
 		});
