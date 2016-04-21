@@ -313,6 +313,7 @@
 		"esri/views/MapView",
 		"esri/Basemap",
 		"esri/widgets/Search",
+		"esri/layers/ArcGISTiledLayer",
 		"esri/layers/FeatureLayer",
 		"esri/widgets/Popup",
 		"esri/PopupTemplate",
@@ -328,7 +329,7 @@
 		"dojo/dom-style",
 		"dojo/html",
 		"dojo/domReady!"
-	], function(Map, SceneView, MapView, Basemap, Search, FeatureLayer, Popup, PopupTemplate, watchUtils, Locate, LocateVM, GraphicsLayer, Point, Home, HomeVM, query, domClass, domStyle, html) {
+	], function(Map, SceneView, MapView, Basemap, Search, ArcGISTiledLayer, FeatureLayer, Popup, PopupTemplate, watchUtils, Locate, LocateVM, GraphicsLayer, Point, Home, HomeVM, query, domClass, domStyle, html) {
 		
 		// ============
 		// App Settings 
@@ -484,10 +485,8 @@
 						target: pt,
 						zoom: 17
 					});
-					console.log(mapView.popup);
-					mapView.popup.set(mapView.popup.params.viewModel.location.latitude, latitude);
-					mapView.popup.set(mapView.popup.params.viewModel.location.longitude, longitude);
-					//console.log(evt.target);
+					
+					
 				}  
 			});
 			
@@ -630,6 +629,14 @@
 			return search;
 		}
 		
+		var imagery = new ArcGISTiledLayer({
+				url: "http://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer"
+			  });
+		imagery.minScale = 9000;
+		var imageryLabels = new ArcGISTiledLayer({
+				url: "http://services.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer"
+			  });
+		imageryLabels.minScale = 9000;
 		
 		 var mask = new FeatureLayer({
 			url: 'http://services.arcgis.com/ZzrwjTRez6FJiOq4/ArcGIS/rest/services/UtahStateMask/FeatureServer/0'
@@ -641,7 +648,7 @@
 			outFields: ["*"],
 			popupTemplate: template
 		});
-		map.add([points, mask]);
+		map.add([ imagery, imageryLabels,mask,points]);
 		
 		//This graphics layer will store the graphic used to display the user's location
 		var gl = new GraphicsLayer();
@@ -730,7 +737,11 @@
             }
         }
 		
-		
+		console.log(mapView);
+		mapView.on("extent-change", function(evt){
+			  //evt is the event object returned after the event fires
+					console.log("zoomed");
+					});
 		
 		// doesnt work
 		points.on("mouse-over", function() {
