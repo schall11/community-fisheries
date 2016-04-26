@@ -296,7 +296,7 @@
 		  isMobile = true;
 		}
 	</script>
-	
+	<script src="scripts/papaparse.min.js"></script>
 	<!-- ArcGIS JS 4.0 lirbaries -->
 	<script src="http://js.arcgis.com/4.0beta3/"></script>
 	
@@ -305,7 +305,15 @@
 
 	// ======
 	// ArcGIS 
-	// ======				
+	// ======
+	var stockDict = {};
+		var nameLookup = {};
+		var stockNames = [];
+	Papa.parse("http://dwrapps.dev.utah.gov/fishstocking/FishCSV", {
+			download: true,
+			complete: function(results) {
+				//console.log(results.data);
+				
 		
 	var map, mapView, sceneView, searchWidgetNav, searchWidgetPanel, activeView, fl, settings, sceneZoomed;
 
@@ -329,6 +337,7 @@
 		"dojo/dom-class",
 		"dojo/dom-style",
 		"dojo/html",
+		"dojo/_base/lang",
 		"dojo/domReady!"
 	], function(Map, SceneView, MapView, Basemap, Search, ArcGISTiledLayer, FeatureLayer, Popup, PopupTemplate, watchUtils, Locate, LocateVM, GraphicsLayer, Point, Home, HomeVM, query, domClass, domStyle, html, lang) {
 		
@@ -546,15 +555,34 @@
           "<br><br>For more information on stocking reports please visit <a href='{Stocking_R}'>Stocking Report</a>" +
           "<br><br>For additional info, please contact the {ContactInf}<br>", */
 		 
-	
+		var stockData;
+		
+		
+		
+		var stockData = results.data;
+		
+		for (var i = 0; i < stockData.length; i++){
+			if (stockData[i].length > 1) {
+			//console.log(stockData[i]);
+			var name = stockData[i][0];
+			//console.log(name);
+			nameLookup[name] = 1;
+			if (!(name in stockDict)){
+			stockDict[name] = stockData[i][5];
+			}
+			/* put date filter stuff in here */
+			}
+		}
+		console.log(stockNames);
+		console.log(stockDict);
 
 		 
 		 
-		var template = new PopupTemplate({
+		var template = new lang.partial(stockDict,( PopupTemplate,{
         title: "{WaterName}",
         content: "Stocked with {Species}" +
-          "<br><br>For more information on stocking reports please visit <a href='{Stocking_R}'>Stocking Report</a>" +
-          "<br><br>For additional info, please contact the {ContactInf}<br>",
+          "<br><br> Last stocked For more information on stocking reports please visit <a href='{Stocking_R}'>Stocking Report</a>" +
+          "<br><br>For additional info, please contact the {ContactInf}<br>{WTRNAME}--"+ stockDict['{WTRNAME}'],
         fieldInfos: [{
 			fieldName: "WaterName",
 			label: "Name",
@@ -572,9 +600,16 @@
 			fieldName: 'Stocking_R',
 			label: "Stocking Information",
 			visible: true
+		  },
+		  {
+			fieldName: 'WTRNAME',
+			label: "Water Name",
+			visible: true
 		  }
 		  ]
-		  });
+		  }, stockDict));
+		  
+		 console.log(template);
 		  
 		  
 		mapView.popup.viewModel.overwriteActions = true;
@@ -812,7 +847,8 @@
 		});<!-- jQuery -->
 	});<!-- dojo -->
 	
-	
+	}
+		});
 	</script>
 
 	<!-- Bootstrap core JavaScript

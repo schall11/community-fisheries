@@ -3,6 +3,22 @@
 /* Core overrides to create map layouts */
 /* ======================================================================== */
 
+.panel {
+	background-color: #44413A;
+	color: white;
+}
+.panel-default > .panel-heading {
+	background-color: #44413A;
+	color: white;
+}
+.dropdown-menu {
+	background-color: #44413A;
+	color: white;
+	top: 100%;
+}
+.dropdown-menu > li > a {
+	color: white;
+}
 .img-responsive {
 	max-width: 100%;
 	height: auto;
@@ -319,7 +335,7 @@
 
 .calcite-maps .panel-title {
 	font-size: 15px;
-	color: #595959;
+	
 }
 
 .calcite-maps .panel-title a {
